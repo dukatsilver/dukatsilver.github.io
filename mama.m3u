@@ -1,0 +1,29 @@
+#EXTM3U
+#EXTINF:-1,Доктор
+http://83.246.178.12:81/udp/239.54.6.104:1224
+#EXTINF:-1,Доктор
+http://ott-cdn.ucom.am/s76/03.m3u8
+#EXTINF:-1,Здоровье (Одесса)
+http://cdn1.live-tv.od.ua:8081/zdorovood/zdorovo-abr-lq/zdorovood/zdorovo/playlist.m3u8
+#EXTINF:-1,Здоровое ТВ 
+http://79.133.127.158:999/udp/239.191.254.99:13343
+#EXTINF:-1,Мама
+http://79.133.127.158:999/udp/239.191.254.120:13343
+#EXTINF:-1,Сарафан
+http://79.133.127.158:999/udp/239.191.254.128:13343
+#EXTINF:-1,Еда Премиум HD
+http://now2.eaglecdn.com/stream/tveda_12/index.m3u8
+#EXTINF:-1,Магия Кухни ТВ
+http://sc.id-tv.kz/MagiyaKuhni_38_39.m3u8
+#EXTINF:-1,Перец International
+http://streams.tv.mts.by/peretz_int/1/index.m3u8
+#EXTINF:-1,Домашний Int.
+http://ott-cdn.ucom.am/s88/04.m3u8
+#EXTINF:-1,014 Домашний
+http://5.100.102.44:4022/udp/224.3.20.23:1234
+#EXTINF:-1,Че
+http://178.217.110.199:4022/udp/224.0.90.161:1234
+#EXTINF:-1,Lifenews
+http://178.217.110.199:4022/udp/224.0.91.226:1234
+#EXTINF:-1,Pobeda test
+http://5.100.102.44:4022/udp/224.3.20.11:1234
