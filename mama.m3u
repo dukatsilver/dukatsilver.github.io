@@ -17,4 +17,7 @@ http://streams.tv.mts.by/peretz_int/1/index.m3u8
 http://85.112.114.12:8080/ch799/mpegts
 #EXTINF:-1 , Киноменю HD
 http://62.76.26.81:8081/hdmedia/menu/playlist.m3u8
-
+#EXTINF:-1,Че (Север )+2
+http://tvsever.ru:8080/hls/ach2.m3u8
+#EXTINF:-1,Перец
+http://streams.tv.mts.by/peretz_int/1/index.m3u8
