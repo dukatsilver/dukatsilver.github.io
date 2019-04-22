@@ -1,0 +1,260 @@
+<!DOCTYPE PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head> 
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyADhWTP3ADNj_i4ZakDcc1ePI9-KMYzpEE&sensor=false&libraries=places"></script>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link href="css/bootstrap.css" rel="stylesheet"> 
+    <script type="text/javascript">
+
+        
+
+            function inputVal(inputVM) {
+                inputV = document.getElementById("coordxy");
+                inputV.value = inputVM;                
+                coord_XY(inputV.value.replace("(", "").replace(")", ""));                
+                return inputV.value = coordx + "," + coordy;                
+            }
+            
+            function setPoint(n) {
+                            
+                coord_XY($('#coordxy').val());              
+                if( $('#coordxy').val().replace(" ","") == "" || (coordx == "0" && coordy == "0") ){
+                    zoomD = 3;
+                }else{
+                    zoomD = 16;
+                }                
+
+               var mapOptions = {
+                    zoom: zoomD,
+                    mapTypeId: google.maps.MapTypeId.HYBRID,
+                    center: new google.maps.LatLng(coordx, coordy),
+                    streetViewControl: false,
+                    disableDoubleClickZoom: false,
+                    tilt: 0,
+                    overviewMapControl: true,
+                    overviewMapControlOptions: {
+                        opened: true,
+                        position: google.maps.ControlPosition.BOTTOM_LEFT
+                    },
+                    mapTypeControl: true,
+                    mapTypeControlOptions: {
+                      style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+                    }
+                };
+
+                var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(coordx, coordy),
+                    map: map,
+                    draggable: true,
+                    animation: google.maps.Animation.DROP,
+                });              
+
+                function toggleBounce() {
+
+                    if (marker.getAnimation() != null) {
+                        marker.setAnimation(null);
+                    } else {
+                        marker.setAnimation(google.maps.Animation.BOUNCE);
+                    }
+                }
+
+                inputVal(marker.getPosition());
+
+                google.maps.event.addListener(marker, 'dragend', function()
+                {
+                    map.panTo(marker.getPosition(), 10);
+                    mapC = marker.getPosition();
+                    inputVal(mapC);
+
+                });
+
+                google.maps.event.addListener(map, 'click', function(e) {
+                    window.setTimeout(function() {
+                        map.panTo(e.latLng);
+                        marker.setPosition(e.latLng, 8);
+                        mapC = marker.getPosition();
+
+                        inputVal(mapC);
+                    }, 300);
+                });
+
+                var input = (document.getElementById('pac-input'));
+                var types = document.getElementById('type-selector');
+                map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+                map.controls[google.maps.ControlPosition.TOP_LEFT].push(types);
+                var autocomplete = new google.maps.places.Autocomplete(input);
+                autocomplete.bindTo('bounds', map);
+                var infowindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(autocomplete, 'place_changed', function() {
+                    infowindow.close();
+                    marker.setVisible(false);
+                    var place = autocomplete.getPlace();
+                    if (!place.geometry) {
+                        return;
+                    }
+                    // If the place has a geometry, then present it on a map.
+                    if (place.geometry.viewport) {
+                        map.fitBounds(place.geometry.viewport);
+                    } else {
+                        map.setCenter(place.geometry.location);
+                        map.setZoom(17);  // Why 17? Because it looks good.
+                    }
+                    inputVal(place.geometry.location);
+                    marker.setPosition(place.geometry.location);
+                    marker.setVisible(true);
+                });
+
+                // Sets a listener on a radio button to change the filter type on Places
+                // Autocomplete.
+                function setupClickListener(id, types) {
+                    var radioButton = document.getElementById(id);
+                    google.maps.event.addDomListener(radioButton, 'click', function() {
+                        autocomplete.setTypes(types);
+                    });
+                }
+                setupClickListener('changetype-all', []);
+                setupClickListener('changetype-establishment', ['establishment']);
+                setupClickListener('changetype-geocode', ['geocode']);              
+            }
+
+            function startUp() {
+                             
+                              $("#map-canvas").before('<input id="pac-input" class="controls" type="text" placeholder="Search Box" />');
+                                             
+                            image_zoom = 5;                
+                            $("#home").hide();
+                            $("#map-canvas").css({
+                                'position':'relative',
+                                'width': '100%',
+                                'height': '95%',
+                            });
+                            setPoint(1);                
+               };
+
+
+            function trim(value) {
+                if (value.indexOf(".") > 0) {
+                    var valueA = value.split('.');
+                    value = valueA[1].slice(0, 5);
+                    value = valueA[0] + "." + value;
+                }
+                return value;
+            }
+
+            function coord_XY(coord) {
+                coord = coord.replace(" ", ""); 
+                if (coord == "") {
+                    coordx = "0";
+                    coordy = "0";
+                    inputV = document.getElementById("coordxy");
+                    inputV.value = "0, 0";
+
+                } else {
+                    var pattern1 = new RegExp(/(-?(180(\.0+)?|[0-1]?[0-7]?[0-9](\.\d+)?))([ ]|,)*(-?(90(\.0+)?|[0-8]?[0-9](\.\d+)?))/);
+
+                    if (pattern1.test(coord)) {
+
+                        var coordSplit = coord.split(',');
+                        coordx = trim(coordSplit[0]);
+                        coordy = trim(coordSplit[1]);
+
+                    } else {
+                        alert("Wrong Coordinate.");
+                        coordx = "0";
+                        coordy = "0";
+                        inputV = document.getElementById("coordxy");
+                        inputV.value = "0, 0";
+                    }
+                }                
+            }
+
+            
+
+                 
+
+
+           
+
+            $('#coordxy').on('paste', function() {
+                var element = this;
+                setTimeout(function() {
+                    var text = $(element).val();
+                    var coordsX = $("input#coordxy").val().split(",")[0];
+
+                    var coordsY = $("input#coordxy").val().split(",")[1];
+                    $("#latitude").val(coordsX);
+                    $("#longitude").val(coordsY);
+
+                }, 100);
+            });
+
+     $("#latitude, #longitude").on('click', function() {
+
+                $(this).select();				
+            });
+       
+            
+    </script>
+    <style>
+        #target {
+            width: 345px;
+        }
+        
+      #mapDiv > div {
+          display: inline-block;
+          line-height: 200%;
+      }
+
+      #selectDiv select {
+        float: left;
+      }
+      
+    </style>
+    <title>Ultimate Earth Zoom Toolkit - Map Generator Wizzard</title>
+</head>
+<body>
+<div style="width:1400px; height:30px; padding:5px;" >
+    <form   onsubmit="return false" >              
+        <input  type="text" id="coordxy" name="coordxy" placeholder="Enter Coordinates">                          
+    </form>
+</div>
+<!-- <input id="pac-input" class="controls" type="text" placeholder="Search Box" /> -->
+
+<div id="map-canvas" > </div>
+
+
+<div id="home">
+
+</div>
+    <style> 
+    inputs:-webkit-input-placeholder {
+    color: #b5b5b5;
+    }
+
+    inputs-moz-placeholder {
+    color: #b5b5b5;
+    }
+
+    .textbox { 
+    
+    -moz-border-radius-topleft: 30px;
+    -webkit-border-top-left-radius: 30px;
+    border-top-left-radius: 30px;
+    -moz-border-radius-bottomleft: 30px;
+    -webkit-border-bottom-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border: 1px solid #848484;
+    outline:0; 
+    height:25px; 
+    width: 200px; 
+    padding-left:10px; 
+  } 
+</style>
+
+<script type="text/javascript">
+    startUp();
+ </script>
+</body>
+</html>
